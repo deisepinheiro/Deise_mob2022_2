@@ -25,6 +25,7 @@ public class UserRepository implements Listener<JSONArray>,Response.ErrorListene
     private List<User> users;
     private static UserRepository instance;
     private Context contexto;
+    private OnReadyListener onReadyListener;
 
     private UserRepository(Context contexto) {
         super();
@@ -65,9 +66,16 @@ public class UserRepository implements Listener<JSONArray>,Response.ErrorListene
         Log.e(TAG, "UserRepository: lancei" );
     }
 
-    public static UserRepository getInstance(Context contexto) {
+    public static UserRepository getInstance(Context contexto, OnReadyListener orl) {
         if (instance == null) {
             instance = new UserRepository(contexto);
+            instance.onReadyListener = orl;
+        }
+        if (!instance.getUsers().isEmpty()){
+            if (orl != null){
+                orl.onReady();
+                instance.onReadyListener = null;
+            }
         }
         return instance;
     }
@@ -125,6 +133,12 @@ public class UserRepository implements Listener<JSONArray>,Response.ErrorListene
             }
 
         }
+
+        if(onReadyListener != null){
+            onReadyListener.onReady();
+        }
+        onReadyListener = null;
+
         Log.e(TAG, "onResponse: terminei" );
     }
 

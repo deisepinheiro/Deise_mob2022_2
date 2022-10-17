@@ -14,6 +14,7 @@ public class LoginPresenterContract {
     public interface presenter {
         public void checkLogin(String login, String password);
         public void validLogin(User user);
-
+        public void saveLoginSharedPreferences(User user);
+        public void loadLoginSharedPreferences();
     }
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.google.android.material.snackbar.Snackbar;
 
 import br.edu.uniritter.mobile.mobile20222_1.R;
+import br.edu.uniritter.mobile.mobile20222_1.model.User;
 import br.edu.uniritter.mobile.mobile20222_1.presenter.LoginPresenter;
 import br.edu.uniritter.mobile.mobile20222_1.presenter.LoginPresenterContract;
 import br.edu.uniritter.mobile.mobile20222_1.repository.UserRepository;
@@ -22,24 +23,20 @@ public class LoginActivity extends AppCompatActivity implements LoginPresenterCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.e("TAG", "onCreate: antes do getInstance" );
-        UserRepository.getInstance(this);
-        Log.e("TAG", "onCreate: depois do getInstance "+UserRepository.getInstance(this).getUsers().size());
+        UserRepository.getInstance(this, null);
+        Log.e("TAG", "onCreate: depois do getInstance "+UserRepository.getInstance(this, null).getUsers().size());
 
         setContentView(R.layout.activity_login);
 
         this.presenter = new LoginPresenter(this);
+        this.presenter.loadLoginSharedPreferences();
 
 
         findViewById(R.id.buttonLogin).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        presenter.checkLogin(
-                                ((TextView) findViewById(R.id.edLogin)).getText().toString(),
-                                ((TextView) findViewById(R.id.edPassword)).getText().toString()
-                        );
-                    }
-                }
+                view -> presenter.checkLogin(
+                        ((TextView) findViewById(R.id.edLogin)).getText().toString(),
+                        ((TextView) findViewById(R.id.edPassword)).getText().toString()
+                )
         );
     }
 
